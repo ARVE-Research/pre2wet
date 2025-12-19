@@ -20,6 +20,7 @@ variables:
 		obs:long_name = "number of observations" ;
 		obs:missing_value = -32768s ;
 		obs:_FillValue = -32768s ;
+		obs:actual_range = 0s, 0s ;
 		obs:_ChunkSizes = 1, 360, 720 ;
 		obs:_DeflateLevel = 1 ;
 
@@ -27,6 +28,7 @@ variables:
 		slope:long_name = "slope of the linear fit" ;
 		slope:missing_value = -9999.f ;
 		slope:_FillValue = -9999.f ;
+		slope:actual_range = -9999.f, -9999.f ;
 		slope:_ChunkSizes = 1, 360, 720 ;
 		slope:_DeflateLevel = 1 ;
 
@@ -34,6 +36,7 @@ variables:
 		intercept:long_name = "intercept of the linear fit" ;
 		intercept:missing_value = -9999.f ;
 		intercept:_FillValue = -9999.f ;
+		intercept:actual_range = -9999.f, -9999.f ;
 		intercept:_ChunkSizes = 1, 360, 720 ;
 		intercept:_DeflateLevel = 1 ;
 
@@ -41,6 +44,7 @@ variables:
 		r2:long_name = "adjusted R-squared" ;
 		r2:missing_value = -9999.f ;
 		r2:_FillValue = -9999.f ;
+		r2:actual_range = -9999.f, -9999.f ;
 		r2:_ChunkSizes = 1, 360, 720 ;
 		r2:_DeflateLevel = 1 ;
 
@@ -48,6 +52,7 @@ variables:
 		rmse:long_name = "root-mean-square error" ;
 		rmse:missing_value = -9999.f ;
 		rmse:_FillValue = -9999.f ;
+		rmse:actual_range = -9999.f, -9999.f ;
 		rmse:_ChunkSizes = 1, 360, 720 ;
 		rmse:_DeflateLevel = 1 ;
 

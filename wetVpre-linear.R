@@ -40,13 +40,13 @@ nc_close(ifid)
 # ----------------------
 # work through grid
 
-fillvalue <- -9999.
+missing <- -9999.
 
 obs       <- array(data=-32768,dim=c(xlen,ylen))
-slope     <- array(data=fillvalue,dim=c(xlen,ylen))
-intercept <- array(data=fillvalue,dim=c(xlen,ylen))
-r2        <- array(data=fillvalue,dim=c(xlen,ylen))
-rmse      <- array(data=fillvalue,dim=c(xlen,ylen))
+slope     <- array(data=missing,dim=c(xlen,ylen))
+intercept <- array(data=missing,dim=c(xlen,ylen))
+r2        <- array(data=missing,dim=c(xlen,ylen))
+rmse      <- array(data=missing,dim=c(xlen,ylen))
 
 # ----------------------
 # regression on all data
@@ -72,11 +72,17 @@ for (y in seq(1,ylen)) {
       dep <- dep_all[didrain]
       
       lmfit <- lm(dep ~ log(ind))
-
+      
+      pval <- summary(lmfit)$coefficients[2,4]
+      
+      if (pval > 0.01) next  # do not record stats for fits that don't meet a 99% confidence threshold
+      
       coefs <- coef(lmfit)
 
       slope[x,y]     <- coefs[2]
       intercept[x,y] <- coefs[1]
+      
+      if (slope[x,y] < 0) cat(x,y,slope[x,y],"\n")
       
       r2[x,y] <- summary(lmfit)$adj.r.squared
 
@@ -93,13 +99,37 @@ outfile <- "wetVpre-linear-annual.nc"
 
 ofid <- nc_open(outfile,write=TRUE)
 
+# ----
 ncvar_put(ofid,"obs",obs)
+actual_range <- c(min(obs[obs != -32768]),max(obs[obs != -32768]))
+ncatt_put(ofid,"obs","actual_range",actual_range,prec="short")
+
+# ----
 ncvar_put(ofid,"slope",slope)
+actual_range <- c(min(slope[slope != missing]),max(slope[slope != missing]))
+ncatt_put(ofid,"slope","actual_range",actual_range,prec="float")
+
+# ----
 ncvar_put(ofid,"intercept",intercept)
+actual_range <- c(min(intercept[intercept != missing]),max(intercept[intercept != missing]))
+ncatt_put(ofid,"intercept","actual_range",actual_range,prec="float")
+
+# ----
 ncvar_put(ofid,"r2",r2)
+actual_range <- c(min(r2[r2 != missing]),max(r2[r2 != missing]))
+ncatt_put(ofid,"r2","actual_range",actual_range,prec="float")
+
+# ----
 ncvar_put(ofid,"rmse",rmse)
+actual_range <- c(min(rmse[rmse != missing]),max(rmse[rmse != missing]))
+ncatt_put(ofid,"rmse","actual_range",actual_range,prec="float")
 
 nc_close(ofid)
+
+
+
+
+
 
 # ----------------------
 # regressions per month
